@@ -3,41 +3,6 @@ import ReactDOM from 'react-dom';
 import './app.css';
 
 
-{/*A way to create a component without using fat arrow functinons
-
-    function Header() {
-    return (
-        <header>
-            <h1>Scoreboard</h1>
-            <span className="stats">Players: 1</span>
-        </header>
-    );
-};
-
-*/}
-
-const players = [
-    {
-        name: "Guil",
-        score: 50,
-        id: 1
-      },
-      {
-        name: "Treasure",
-        score: 85,
-        id: 2
-      },
-      {
-        name: "Ashley",
-        score: 95,
-        id: 3
-      },
-      {
-        name: "James",
-        score: 80,
-        id: 4
-      }
-]
 
 const Header = (props) => {
     console.log(props )
@@ -50,48 +15,108 @@ const Header = (props) => {
 }
 
 const Player = (props) => {
+ 
     return (
         <div className="player">
             <span className="player-name">
+            <button className="remove-player" onClick={() => props.removePlayer(props.id)}>✖</button>
                 {props.playerName}
             </span>    
-        <Counter counterScore={props.counterScore} />
+        <Counter />
         </div>
     )
 }
 
-const Counter = (props) => {
-    return (
-        <div className="counter">
-            <button className="counter-action decrement">-</button>
-            <span className="counter-score">{props.counterScore}</span>
-            <button className="counter-action increment">+</button>
-        </div>
-    )
+class Counter extends React.Component {
+state = {
+            score: 0
+        }  
+
+incrementScore = () => {
+    this.setState( prevState => {
+        return {
+            score: prevState.score +1
+        }
+    });
 }
 
-const App = (props) => {
-    return (
-        <div className="scoreboard">
-            <Header title="Scoreboard" 
-            totalPlayers={props.initalPlayers.length}        
-            />
+decrementScore = () =>
+    this.setState( prevState => {
+        return {
+            score: prevState.score -1
+        }
+    });
 
-            {/*Players list*/}
-            {props.initalPlayers.map( player =>
-                <Player 
-                playerName={player.name} 
-                counterScore={player.score} 
-                key={player.id.toString()}
+
+    render() {
+        return (
+                <div className="counter">
+                    <button className="counter-action decrement" onClick={this.decrementScore}>-</button>
+                    <span className="counter-score">{this.state.score}</span>
+                    <button className="counter-action increment" onClick={this.incrementScore}>+</button>
+                </div>
+            )
+
+    }
     
-                />
-            )}
+}
 
-        </div>
-    )
+class App extends React.Component {
+    state = {
+        players: [
+            {
+                name: "Guil",
+                id: 1
+              },
+              {
+                name: "Treasure",
+                id: 2
+              },
+              {
+                name: "Ashley",
+                id: 3
+              },
+              {
+                name: "James",
+                id: 4
+              }
+        ]
+    }
+
+    handleRemovePlayer = (id) => {
+        this.setState( prevState => {
+            return {
+                players: prevState.players.filter(player => player.id !== id)
+            }
+        })
+    }
+    
+    render() {
+        return (
+            <div className="scoreboard">
+                <Header title="Scoreboard" 
+                totalPlayers={this.state.players.length}        
+                />
+
+                {/*Players list*/}
+                {this.state.players.map( player =>
+                    <Player 
+                    playerName={player.name} 
+                    id={player.id}
+                    key={player.id.toString()}
+                    removePlayer={this.handleRemovePlayer}
+                    />
+                )}
+
+            </div>
+        )
+
+    }
+
+
 }
 
 ReactDOM.render(
-    <App initalPlayers={players}/>,
+    <App />,
     document.getElementById('root')
 )

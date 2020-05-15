@@ -29,14 +29,19 @@ class App extends Component {
         ]
     }
 
-    handleScorechange = (delta) => {
+    handleScorechange = (index, delta) => {
     
-        // this.setState( prevState => {
-        //     return {
-        //         score: prevState.score +1
-        //     }
-        // });  
-        console.log( delta )      
+        this.setState( prevState => {
+            const updatedPlayers = [...prevState.players];
+            const updatedPlayer = {...updatedPlayers[index]};
+
+            updatedPlayer.score += delta;
+            updatedPlayers[index] = updatedPlayer;
+            return {
+                /* Due to updating the state directly this code was refactored to the below statement- score: prevState.players[index].score += delta */
+                players: updatedPlayers
+            }
+        });
     }
 
     handleRemovePlayer = (id) => {
@@ -55,12 +60,13 @@ class App extends Component {
                 />
 
                 {/*Players list*/}
-                {this.state.players.map( player =>
+                {this.state.players.map( (player, index) =>
                     <Player 
                     playerName={player.name} 
                     score={player.score}
                     id={player.id}
                     key={player.id.toString()}
+                    index={index}
                     changeScore={this.handleScorechange}
                     removePlayer={this.handleRemovePlayer}
                     />

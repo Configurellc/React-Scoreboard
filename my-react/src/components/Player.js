@@ -9,7 +9,10 @@ const Player = (props) => {
             <button className="remove-player" onClick={() => props.removePlayer(props.id)}>✖</button>
                 {props.playerName}
             </span>    
-        <Counter />
+        <Counter 
+            score={props.score}
+            changeScore={props.changeScore}
+         />
         </div>
     )
 }
